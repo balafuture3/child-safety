@@ -63,7 +63,56 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   )
               ),
-            ),], crossAxisCount: 3,
+            ),
+            InkWell(
+              onTap: (){
+                // Navigator.push(context, MaterialPageRoute(builder: (builder)=>MapSample()));
+              },
+              child: Container(
+                  margin: EdgeInsets.all(20),
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.all(Radius.circular(10))
+                  ),
+
+
+                  child:Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.mic),
+                      Text("Mic")
+                    ],
+                  )
+              ),
+            ),
+            InkWell(
+              onTap: (){
+                // Navigator.push(context, MaterialPageRoute(builder: (builder)=>MapSample()));
+              },
+              child: Container(
+                  margin: EdgeInsets.all(20),
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.all(Radius.circular(10))
+                  ),
+
+
+                  child:Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.bar_chart),
+                      Text("Temperature")
+                    ],
+                  )
+              ),
+            ),
+          ], crossAxisCount: 3,
 
         ),
       ),
