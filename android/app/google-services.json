@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "140446342384",
+    "project_id": "childsafety-a58fb",
+    "storage_bucket": "childsafety-a58fb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:140446342384:android:25ff33df6a026d8aa1f635",
+        "android_client_info": {
+          "package_name": "com.example.childsafety"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "140446342384-2u3nlttf7ussct5qrel12ismsp01uvvv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-yJY5dXewml86mkFCNzeRdR5xxWCkHBA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "140446342384-2u3nlttf7ussct5qrel12ismsp01uvvv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
