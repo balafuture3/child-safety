@@ -1,4 +1,7 @@
 import 'package:childsafety/main.dart';
+import 'package:childsafety/mic_screen.dart';
+import 'package:childsafety/temperature_screen.dart';
+import 'package:childsafety/video_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -42,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
             InkWell(
               onTap: (){
-                // Navigator.push(context, MaterialPageRoute(builder: (builder)=>MapSample()));
+                Navigator.push(context, MaterialPageRoute(builder: (builder)=>VideoScreen()));
               },
               child: Container(
                   margin: EdgeInsets.all(20),
@@ -66,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             InkWell(
               onTap: (){
-                // Navigator.push(context, MaterialPageRoute(builder: (builder)=>MapSample()));
+                Navigator.push(context, MaterialPageRoute(builder: (builder)=>PlayFromMic()));
               },
               child: Container(
                   margin: EdgeInsets.all(20),
@@ -90,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             InkWell(
               onTap: (){
-                // Navigator.push(context, MaterialPageRoute(builder: (builder)=>MapSample()));
+                Navigator.push(context, MaterialPageRoute(builder: (builder)=>TempScreen()));
               },
               child: Container(
                   margin: EdgeInsets.all(20),
