@@ -150,7 +150,7 @@ class _PlayFromMicState extends State<PlayFromMic> {
                 width: 20,
               ),
               Text(_mPlayer!.isPlaying
-                  ? 'Playing microphone to headset'
+                  ? 'Playing '
                   : 'Recorder is stopped'),
             ]),
           ),
