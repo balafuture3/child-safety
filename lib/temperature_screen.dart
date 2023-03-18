@@ -12,21 +12,31 @@ class TempScreen extends StatefulWidget {
 }
 
 class _TempScreenState extends State<TempScreen> {
-
-  int value1=36;
+  int value1 = 36;
+  int value2 = 14;
 
   late Timer t;
+  late Timer t1;
+
   @override
   void initState() {
-  t = Timer.periodic(const Duration(seconds: 1), (timer) {
-    setState(() {
-      Random rnd;
-      int min = 35;
-      int max = 38;
-      rnd = new Random();
-      value1 = min + rnd.nextInt(max - min);
+    t1 = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        Random rnd;
+        int min = 14;
+        int max = 20;
+        rnd = new Random();
+        value2 = min + rnd.nextInt(max - min);
+      });
     });
-
+    t = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        Random rnd;
+        int min = 35;
+        int max = 38;
+        rnd = new Random();
+        value1 = min + rnd.nextInt(max - min);
+      });
     });
     // TODO: implement initState
     super.initState();
@@ -35,32 +45,41 @@ class _TempScreenState extends State<TempScreen> {
   @override
   void dispose() {
     t.cancel();
+    t1.cancel();
     // TODO: implement dispose
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: Text("Temperature"),),
-          body: Center(
-              child: Container(
-                  child: SfRadialGauge(
-                      axes: <RadialAxis>[
-                        RadialAxis(minimum: 0, maximum: 50,
-                            ranges: <GaugeRange>[
-                              GaugeRange(startValue: 0, endValue: 20, color:Colors.green),
-                              GaugeRange(startValue: 20,endValue: 35,color: Colors.orange),
-                              GaugeRange(startValue: 35,endValue: 50,color: Colors.red)
-                            ],
-                            pointers: <GaugePointer>[
-                              NeedlePointer(value: value1.toDouble())],
-                            annotations: <GaugeAnnotation>[
-                              GaugeAnnotation(widget: Container(child:
-                              Text(value1.toString(),style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold))),
-                                  angle: 90, positionFactor: 0.5
-                              )]
-                        )])
+          appBar: AppBar(
+            title: Text("Temperature and Humidity"),
+          ),
+          body: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          " Temperature  :  $value1 'C",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w800),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(" Humidity : $value2",
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.w800)),
+                      )
+                    ]),
               ))),
     );
   }
