@@ -72,6 +72,10 @@ class _VideoScreenState extends State<VideoScreen> {
           );});
         }
         else {
+          showDialog(context: context, builder: (BuildContext context) { return AlertDialog(
+            title: Text("Error"),
+            content: Text("Please take screenshot again")
+          );});
           print(response.reasonPhrase);
         }
 
