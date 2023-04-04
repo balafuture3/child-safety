@@ -1,7 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
+import 'package:childsafety/Model/DataModel.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class TempScreen extends StatefulWidget {
@@ -12,32 +16,62 @@ class TempScreen extends StatefulWidget {
 }
 
 class _TempScreenState extends State<TempScreen> {
-  int value1 = 36;
-  int value2 = 14;
+  String value1 = "36";
+  String value2 = "14";
 
   late Timer t;
   late Timer t1;
 
+  bool loading = false;
+
+  late DataModel liRes;
+  Future<Response> getData() async {
+    var url;
+
+    url = Uri.parse("http://www.balasblog.co.in/test.php");
+
+    print(url);
+    // print(headers);
+
+    setState(() {
+      loading = true;
+    });
+
+    var response = await http.get(
+      url,
+    );
+    print(response.body);
+    if (response.statusCode == 200)
+    {
+      liRes = DataModel.fromJson(jsonDecode(response.body));
+      setState(() {
+        value1 = liRes.temp!.split(',')[0].toString();
+        value2 = liRes.temp!.split(',')[1].toString();
+      });
+    }
+
+    setState(() {
+      loading = false;
+    });
+    return response;
+  }
+
   @override
   void initState() {
-    t1 = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        Random rnd;
-        int min = 14;
-        int max = 20;
-        rnd = new Random();
-        value2 = min + rnd.nextInt(max - min);
-      });
+    getData();
+    t1 = Timer.periodic(const Duration(seconds: 10), (timer) {
+      getData();
+
     });
-    t = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        Random rnd;
-        int min = 35;
-        int max = 38;
-        rnd = new Random();
-        value1 = min + rnd.nextInt(max - min);
-      });
-    });
+    // t = Timer.periodic(const Duration(seconds: 1), (timer) {
+    //   setState(() {
+    //     Random rnd;
+    //     int min = 35;
+    //     int max = 38;
+    //     rnd = new Random();
+    //     value1 = min + rnd.nextInt(max - min);
+    //   });
+    // });
     // TODO: implement initState
     super.initState();
   }
@@ -45,8 +79,7 @@ class _TempScreenState extends State<TempScreen> {
   @override
   void dispose() {
     t.cancel();
-    t1.cancel();
-    // TODO: implement dispose
+    // t1.cancel();?    // TODO: implement dispose
     super.dispose();
   }
 
@@ -57,7 +90,7 @@ class _TempScreenState extends State<TempScreen> {
           appBar: AppBar(
             title: Text("Temperature and Humidity"),
           ),
-          body: Container(
+          body: loading?CircularProgressIndicator():Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: Padding(

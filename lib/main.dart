@@ -1,9 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:childsafety/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
+
+import 'Model/DataModel.dart';
 
 /// Determine the current position of the device.
 ///
@@ -50,6 +56,8 @@ class MapSample extends StatefulWidget {
 
 
 class MapSampleState extends State<MapSample> {
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
 
   final Completer<GoogleMapController> _controller =
   Completer<GoogleMapController>();
@@ -68,6 +76,8 @@ class MapSampleState extends State<MapSample> {
       zoom: 19.151926040649414);
 
 late Position position;
+
+  var marker= [Marker(markerId: MarkerId("1"),position: LatLng(0, 0))];
   Future<void> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -115,11 +125,92 @@ late Position position;
 
     });
   }
+  String value1 = "36";
+  String value2 = "14";
+
+  late Timer t;
+  late Timer t1;
+
+  bool loading = false;
+
+  late DataModel liRes;
+  Future<Response> getData() async {
+    var url;
+
+    url = Uri.parse("http://www.balasblog.co.in/test.php");
+
+    print(url);
+    // print(headers);
+
+    setState(() {
+      loading = true;
+    });
+
+    var response = await http.get(
+      url,
+    );
+    print(response.body);
+    if (response.statusCode == 200)
+    {
+      liRes = DataModel.fromJson(jsonDecode(response.body));
+      setState(() {
+        marker.clear();
+        marker.add(Marker(markerId: MarkerId("1"),position: LatLng(double.parse(liRes.location!.split(',')[0]), double.parse(liRes.location!.split(',')[1]))));
+        _kLake = CameraPosition(
+            bearing: 192.8334901395799,
+            target: LatLng(double.parse(liRes.location!.split(',')[0]), double.parse(liRes.location!.split(',')[1])),
+            // tilt: 59.440717697143555,
+            zoom: 19.151926040649414);
+        _goToTheLake();
+      });
+    }
+
+    setState(() {
+      loading = false;
+    });
+    return response;
+  }
+  Future<void> onSelectNotification(String payload) async {
+    debugPrint("payload : $payload");
+    showDialog(
+      context: context,
+      builder: (_) => new AlertDialog(
+        title: new Text('Notification'),
+        content: new Text('$payload'),
+      ),
+    );
+  }
+  showNotification() async {
+    var android = const AndroidNotificationDetails(
+        'channel id', 'channel NAME',
+        priority: Priority.high,importance: Importance.max
+    );
+    var platform = NotificationDetails(android: android);
+    await flutterLocalNotificationsPlugin.show(
+        0, 'Your Child is unsafe', 'Location=${liRes.location}\nTemperature=${liRes.temp!.split(",")[0]},Humidity=${liRes.temp!.split(",")[1]}', platform,
+        payload: 'Nitish Kumar Singh is part time Youtuber');
+  }
+
   @override
   void initState() {
-   _determinePosition();
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    var android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initSetttings = InitializationSettings(android: android);
+    flutterLocalNotificationsPlugin.initialize(initSetttings);
+    getData();
+    t1 = Timer.periodic(const Duration(seconds: 10), (timer) {
+      getData();
+
+    });
+   // _determinePosition();
     // TODO: implement initState
     super.initState();
+  }
+  @override
+  void dispose() {
+    t1.cancel();
+    // TODO: implement dispose
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
@@ -128,18 +219,22 @@ late Position position;
         child: GoogleMap(
           myLocationEnabled: true,
           mapType: MapType.normal,
+          markers: Set<Marker>.of(marker),
           initialCameraPosition: _kGooglePlex,
           onMapCreated: (GoogleMapController controller) {
             _controller.complete(controller);
           },
         ),
       ),
-      // floatingActionButton: FloatingActionButton.extended(
-      //   onPressed: _goToTheLake,
-      //   label: const Text('To the lake!'),
-      //   icon: const Icon(Icons.directions_boat),
-      // ),
-    );
+      floatingActionButton:  Opacity(
+    opacity: 0, // Set it to 0
+    child:FloatingActionButton.extended(
+
+        onPressed: showNotification,
+        label: const Text('Notify'),
+        icon: const Icon(Icons.directions_boat),
+      ),
+    ));
   }
 
   Future<void> _goToTheLake() async {
