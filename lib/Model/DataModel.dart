@@ -1,3 +1,20 @@
+class DataModelList {
+  final List<DataModel> details;
+
+  DataModelList({
+    required this.details,
+  });
+
+  factory DataModelList.fromJson(List<dynamic> parsedJson) {
+    List<DataModel> details = <DataModel>[];
+    details =
+        parsedJson.map((i) => DataModel.fromJson(i)).toList();
+
+    return new DataModelList(details: details);
+  }
+}
+
+
 class DataModel {
   String? id;
   String? temp;

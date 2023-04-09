@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:path/path.dart';
 import 'package:childsafety/home_screen.dart';
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'Model/DataModel.dart';
 
@@ -78,6 +82,8 @@ class MapSampleState extends State<MapSample> {
 late Position position;
 
   var marker= [Marker(markerId: MarkerId("1"),position: LatLng(0, 0))];
+
+  late DataModelList liRes1;
   Future<void> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -173,7 +179,7 @@ late Position position;
   Future<void> onSelectNotification(String payload) async {
     debugPrint("payload : $payload");
     showDialog(
-      context: context,
+      context: this.context,
       builder: (_) => new AlertDialog(
         title: new Text('Notification'),
         content: new Text('$payload'),
@@ -212,9 +218,107 @@ late Position position;
     // TODO: implement dispose
     super.dispose();
   }
+  Future<void> generateExcel() async {
+    var url;
+
+    url = Uri.parse("http://www.balasblog.co.in/test1.php");
+
+    print(url);
+    // print(headers);
+
+    setState(() {
+      loading = true;
+    });
+
+    var response = await http.get(
+      url,
+    );
+    print(response.body);
+    if (response.statusCode == 200) {
+      liRes1 = DataModelList.fromJson(jsonDecode(response.body));
+      var excel = Excel.createExcel();
+
+
+      var sheet = excel['Sheet1'];
+
+      var colIterables = ['A', 'B', 'C', 'D', 'E'];
+      int colIndex = 0;
+      sheet.cell(CellIndex.indexByColumnRow(
+        rowIndex: 0,
+        columnIndex: colIndex,
+      ))
+          .value = "Temperature";
+
+      for (var colValue in liRes1.details) {
+        sheet.cell(CellIndex.indexByColumnRow(
+          rowIndex: liRes1.details.indexOf(colValue)+1,
+          columnIndex: colIndex,
+        ))
+            .value = colValue.temp?.split(",")[0].toString();
+      }
+       colIndex = 1;
+      sheet.cell(CellIndex.indexByColumnRow(
+        rowIndex: 0,
+        columnIndex: colIndex,
+      ))
+          .value = "Humidity";
+      for (var colValue in liRes1.details) {
+        sheet.cell(CellIndex.indexByColumnRow(
+          rowIndex: liRes1.details.indexOf(colValue)+1,
+          columnIndex: colIndex,
+        ))
+            .value = colValue.temp?.split(",")[1].toString();
+      }
+
+
+      colIndex = 2;
+      sheet.cell(CellIndex.indexByColumnRow(
+        rowIndex: 0,
+        columnIndex: colIndex,
+      ))
+          .value = "Location";
+      for (var colValue in liRes1.details) {
+        sheet.cell(CellIndex.indexByColumnRow(
+          rowIndex: liRes1.details.indexOf(colValue)+1,
+          columnIndex: colIndex,
+        ))
+            .value = colValue.location;
+      }
+      // colIndex = 1;
+      //
+      // liRes1.details.forEach((colValue) {
+      //   sheet.cell(CellIndex.indexByColumnRow(
+      //     rowIndex: colIterables.indexOf(colValue.location.toString()),
+      //     columnIndex: colIndex,
+      //   ))
+      //     ..value = colValue.location.toString();
+      // });
+
+      // Saving the file
+      final directory = await getExternalStorageDirectory();
+      String outputFile = "${directory?.path}/r.xlsx";
+      print(outputFile);
+
+      //stopwatch.reset();
+      List<int>? fileBytes = excel.save();
+      //print('saving executed in ${stopwatch.elapsed}');
+      if (fileBytes != null) {
+        File(join(outputFile))
+          ..createSync(recursive: true)
+          ..writeAsBytesSync(fileBytes);
+      }
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar:AppBar(title: Text("Maps"),
+      actions: [
+        InkWell(onTap:(){
+
+          generateExcel();
+        },child: Icon(Icons.download))
+      ],) ,
       body: SafeArea(
         child: GoogleMap(
           myLocationEnabled: true,
