@@ -341,9 +341,9 @@ packages:
   native_screenshot:
     dependency: "direct main"
     description:
-      name: native_screenshot
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: native_screenshot-master
+      relative: true
+    source: path
     version: "1.0.0"
   nested:
     dependency: transitive
