@@ -41,7 +41,7 @@ class _VideoScreenState extends State<VideoScreen> {
     controller.setUserAgent("Chrome");
     controller.clearCache();
     controller.clearLocalStorage();
-    controller.loadRequest(Uri.parse('http://172.20.10.3'))
+    controller.loadRequest(Uri.parse('http://172.20.10.2'))
       // ..loadRequest(Uri.parse('http://www.youtube.com/'))
     ;
     // TODO: implement initState
