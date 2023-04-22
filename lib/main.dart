@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:childsafety/home_screen.dart';
 import 'package:excel/excel.dart';
@@ -248,13 +249,16 @@ late Position position;
         columnIndex: colIndex,
       ))
           .value = "Date and Time";
+      final DateTime now = DateTime.now();
+      final DateFormat formatter = DateFormat('hh:mm a,dd-MM-yyyy');
+      final String formatted = formatter.format(now);
 
       for (var colValue in liRes1.details) {
         sheet.cell(CellIndex.indexByColumnRow(
           rowIndex: liRes1.details.indexOf(colValue)+1,
           columnIndex: colIndex,
         ))
-            .value = colValue.temp?.split(",")[0].toString();
+            .value = formatted;
       }
        colIndex = 1;
       sheet.cell(CellIndex.indexByColumnRow(
