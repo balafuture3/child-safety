@@ -241,8 +241,22 @@ late Position position;
 
       var sheet = excel['Sheet1'];
 
-      var colIterables = ['A', 'B', 'C', 'D', 'E'];
+      // var colIterables = ['A', 'B', 'C', 'D', 'E'];
       int colIndex = 0;
+      sheet.cell(CellIndex.indexByColumnRow(
+        rowIndex: 0,
+        columnIndex: colIndex,
+      ))
+          .value = "Date and Time";
+
+      for (var colValue in liRes1.details) {
+        sheet.cell(CellIndex.indexByColumnRow(
+          rowIndex: liRes1.details.indexOf(colValue)+1,
+          columnIndex: colIndex,
+        ))
+            .value = colValue.temp?.split(",")[0].toString();
+      }
+       colIndex = 1;
       sheet.cell(CellIndex.indexByColumnRow(
         rowIndex: 0,
         columnIndex: colIndex,
@@ -256,7 +270,7 @@ late Position position;
         ))
             .value = colValue.temp?.split(",")[0].toString();
       }
-       colIndex = 1;
+       colIndex = 2;
       sheet.cell(CellIndex.indexByColumnRow(
         rowIndex: 0,
         columnIndex: colIndex,
@@ -271,7 +285,7 @@ late Position position;
       }
 
 
-      colIndex = 2;
+      colIndex = 3;
       sheet.cell(CellIndex.indexByColumnRow(
         rowIndex: 0,
         columnIndex: colIndex,

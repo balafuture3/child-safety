@@ -49,6 +49,7 @@ dependencies:
   fluttertoast:
   url_launcher: ^6.1.10
   path_provider: ^2.0.14
+  intl:
 
 dev_dependencies:
   flutter_test:
